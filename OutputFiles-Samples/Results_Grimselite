@@ -1,0 +1,24 @@
+       Lattice:       9.30200     9.30200     8.26000              90.00000    90.00000   120.00000
+       Number of Atoms:     40
+ 
+ Water number:             1
+      Oxygen Position:
+IN1:     8   O      0.00000     0.00000     0.12770
+      H positions (Experiment) :
+             H     -0.16691     0.00000     0.00000
+             H     -0.16691     0.00000     0.00000
+      H positions (Torque Method) :
+             H      0.07935    -0.01126     0.19214
+             H     -0.03218     0.06401     0.19336
+ 
+ 
+ 
+   Mean Absolute Error:      0.000  Angstrom
+   Time of calculation:        151.22
+                  Seconds
+ ------------------------------------------------------
+ 
+ 
+ 
+ 
+ 
