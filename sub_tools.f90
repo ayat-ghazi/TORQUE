@@ -3,7 +3,7 @@ use module_dictionary
 use module_structure_symmetry_all
 implicit double precision (a-h,o-z)
 
- integer:: i,j,ii,jj,k ! ,ierror,stats,nline,n_column,ll,ip,iw,kntrl,nt1,nt2
+ integer:: i,j,ii,jj,k 
  integer:: np,icnt_empthy, icnt_comment,il
  real,dimension(3)::syml
  real:: taul 
@@ -362,18 +362,14 @@ iapos=1
 
 !*******************************Lattice
 do i=1,3
-read(c_stFile(nn_lattice+i),*) (platt(j,i),j=1,3 ) !lattice matrix **** ein bayad taghir kone too kole barname, jaye i,j avaz beshe
+read(c_stFile(nn_lattice+i),*) (platt(j,i),j=1,3 ) !lattice matrix 
 enddo
 !!
 
 
-!do i=1,3
-!print '(3f12.6)',  (T_metric(i,j),j=1,3)
-!enddo
 
 
 
-!Nwatom(1)==nn_ATB2-nn_ATB1-2
 do ip=1,Nwatom(1)
 read(c_stFile(ip+nn_ATB1),*)  k,cSpcs(ip,1),achg(ip)
 
@@ -388,7 +384,7 @@ enddo
 
 
 lwykf(:)=0
-!ip, lwykf(ip), posatm(ip,iw,123),occu(ip,1)
+
 
 
 icnt=0
@@ -433,7 +429,7 @@ do j=nn_ATB2+1,nn_O-2
 
  endif
 
-! print '(2 I5,3f12.6,f5.2)', ip,lwykf(ip),posatm(ip,lwykf(ip),1),posatm(ip,lwykf(ip),2),posatm(ip,lwykf(ip),3),occu(ip,lwykf(ip))
+
 
 enddo
 
@@ -472,7 +468,7 @@ enddo
 Nwatom(2)=iwt
 
 
-!Nwater=iwt 
+
 ALLOCATE (ip_Ox(Nwatom(2)),STAT= ierr) 
 ALLOCATE (iwyk_Ox(Nwatom(2)),STAT= ierr) 
 ALLOCATE (Hloc(Nwatom(2),2,3),STAT= ierr)
@@ -489,7 +485,7 @@ enddo
 
 do iwat=1,Nwatom(2)
 
-!print *, ip_Ox(iwat),iwyk_Ox(iwat)
+
 enddo
 !----------------------------------------------------
 !
@@ -513,17 +509,14 @@ ip_Hy=0
  endif
 
 
-!-----------------------
-!do i=1,Nwatom(1)
-!print *, (iwpos(i,j),j=1,3)
-!enddo
+
 
 Hloc=0.
 
 
 !*************** water model
 call column_finder(c_stFile(nn_model+1),n_column)
-!print *, "K ",nn_model+1,n_column,trim(c_stFile(nn_model+1))
+!
 
  read (c_stFile(nn_model+1),*)  model !water model
 
@@ -569,8 +562,7 @@ use module_structure_symmetry_all
 implicit double precision (a-h,o-z)
 
 integer,intent(in):: ipH,iwH,N,nH,irn,nTIP
-!ipH : shomare molecool AAb ro neshoon mide
-!iwH: shomare H oon molecool AAb
+
 
 real,dimension(3) :: r1,r2,r_atom_cz,r_atom_l,R_H_elm,R12,H_transferd,F !in F bayad taghir kone hala, moteghayer global beshe ehtemalan
 real::dis,d1,d2,dis_max,occy
@@ -585,7 +577,7 @@ dis_max=45000.
 F=0.
 occy=1.
 
-!write(*,*) "#############", ipH,lO_elm(ipH)
+
 
 do ip=1,natypes
 icont=0
@@ -597,16 +589,14 @@ enddo
 
 
 !read (*,*) lll
-if (icont==1) goto 155 !Nirooye hasel az Ox haye Aab ro mohasebe nemikonim 
-!*************************
-!************************* Nirooye hasel az H ha mohasebe mishe!!
-!************************ 
+if (icont==1) goto 155 !Electrostatic force of water's oxygens do not calculate here 
+
 
 if (lH_ip(ip)/=0 ) goto 155
-!print *, "force ip=", ip
+
 
 do iw=1,iwykf(ip)
-!write(*,*) ">>>  ",ip, occ(ip,iw),occ(lO_elm(ipH),1),lO_elm(ipH),ipH
+
 
 
 do ix=-1*Nm , N
@@ -620,23 +610,23 @@ do iz=-1*N , N
 	r_atom_l(3)=r_wykf(ip,iw,3)+iz
 
 
-!write(*,*) cAMC(ip,1),n_oxidation(ip), r_atom_l(:)
+
 	call tabbe_tabdil_lattic_cartezian(r_atom_l,r_atom_cz)
-!write(*,*) ip, iw, r_atom_cz(:)
+
 
 	do i=1,3
- 	!R_H_elm(i)=r_atom_cz(i)-xyz_H_cartz(ipH,iwH,i) !bordar vasel H be atom digar==> jahat bordar F niroo
+ 	
 	 R_H_elm(i)=xyz_H_cartz(ipH,iwH,i)-r_atom_cz(i)
-!	**	R_H_elm(i)=H_transferd(i)-r_atom_cz(i)
+
 	enddo
 
 
 
 
 
-!	call tabbe_direct_distance_cartz(H_transferd(:),r_atom_cz(:),dis)
+
 	call tabbe_direct_distance_cartz(xyz_H_cartz(ipH,iwH,:),r_atom_cz(:),dis)
-	!dis ==> fasele ta atom mored nazar
+	
 
 
 
@@ -646,14 +636,11 @@ write(*,*) "dis==0, elements", ip,iw ,ipH,iwH
 read (*,*) i
 endif
 
-!if (dis>40) goto 45    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-!in khat 1.3.2016 ezafe shod baraye inke bekhaym niro ro motegaren konim !**************************************
-!if (abs(R_H_elm(1))> N*a_cell(1) .or. abs(R_H_elm(2))> N*a_cell(2) .or. abs(R_H_elm(3))> N*a_cell(3)  ) goto 45!***
-!***************************************************************************************************************
 
-	!baar e atom H ra +1 dar nazar gereftim
-	!......mohasebe niroo
+
+
+	!Calculating the electrostatic Force
 	if (dis <dis_max ) then
 	do i=1,3
 	F(i)=F(i)+ ( ( occ(ip,iw)*n_oxidation(ip)*occ(lO_elm(ipH),1)*h_oxidation )/(dis**3) )*R_H_elm(i)
@@ -674,10 +661,7 @@ enddo !!iw
 155 continue
 enddo !ip
 
-!write (*,'(A10,3f10.5)') "Force...>" , force_H(ipH,iwH,:)
 
-!if (irn==250) write(*,*) "######"
-!print '(A15,3f12.6)' , "Force...>" , F(:)
 
 
 
@@ -686,12 +670,11 @@ enddo !ip
 
 
 !goto 35
-do jtip=1,nTIP     !tamame molecoolhaye aab ro mesle model dar nazar gereftim
+do jtip=1,nTIP     !All water molecules are considered as the water model
 do iwat=1,iwater
-!do iw=1,lO_wykf(iwat)
 
-!write (*,*) ox_shift_latt(iwat,jtip,:)
-!read (*,*) iiiii
+
+
 
 do ix=-1*Nm , N
 do iy=-1*Nm , N
@@ -700,7 +683,7 @@ do iz=-1*N , N
 
 !ipH is the associated number of water molecule, which its wyckoff position is 1 ==> just this water would be sent to this subroutine
 if (iwat /= ipH .or. ix /= 0 .or. iy /= 0 .or. iz /=0 ) then
-!if (iwat /= ipH ) then
+
 
 	r_atom_l(1)=ox_shift_latt(iwat,jtip,1)+ix
 	r_atom_l(2)=ox_shift_latt(iwat,jtip,2)+iy
@@ -716,7 +699,7 @@ if (iwat /= ipH .or. ix /= 0 .or. iy /= 0 .or. iz /=0 ) then
 
 if (dis==0) then
 write(*,*) "dis==0, elements", ip,iw ,ipH,iwH
-!read (*,*) i
+
 endif
 	if (dis > 0.0 ) then
 	do i=1,3
@@ -724,21 +707,7 @@ endif
 	enddo
 	endif
 
-!************************************************************************************
-!************************** In tike baraye Grimselite Ezafe shode
-!	do i=1,3
-!	if (ix==0 .and. iy==0 .and. iz==0 .and. iwat==3) then
-!	F(i)=F(i)+ ((delta_q*h_oxidation )/(dis**3) )*R_H_elm(i)
-!	elseif (ix==0 .and. iy==0 .and. iz==0 .and. iwat==2) then
-!	F(i)=F(i)
-!	elseif (ix==0 .and. iy==0 .and. iz==0 .and. iwat==4) then
-!	F(i)=F(i)
-!	else
-!	F(i)=F(i)+ 0.5*((delta_q*h_oxidation )/(dis**3) )*R_H_elm(i)
-!	endif		
-!	enddo
 	
-!*************************************************************************************
 
 endif !
 
@@ -759,9 +728,7 @@ enddo !jtip
 
 
 
-!write(*,*) "~~~~~~~~~~~~>  ",irn
-!if (irn<1) goto 75   !dar irn<n ghadam aval nirooye hasel az H ha ro hesab nemikone
-!.................................niroo ye hasel az H ha
+
 
 do inpH=1,iwater  !***************************************************************
 
@@ -769,16 +736,6 @@ do inpH=1,iwater  !*************************************************************
 
 do inwH=1,2   !har AAb 2 ta H dare     !iwater*2
 
-!if (ipH==inpH) then
-
-!write(*,*) "*****", xyz_H_lattice(inpH,inwH,:)
-! goto 65   !nirooye hasel az atom H yek molekool water ro dar nazar nemigire
-!if (iwH==inwH) goto 65
-!if (irn==250) write(*,*) inpH
-!endif
-
-
-!if (irn==700 .and. ipH==1 .and. iwH==2) write(373,'(2I5,3f12.7)')  inpH,inwH, xyz_H_lattice(inpH,inwH,:)
 
 
 do ix=-1*Nm , N
@@ -786,7 +743,7 @@ do iy=-1*Nm , N
 do iz=-1*N , N
 
 if (ipH /=inpH .or. ix /= 0 .or. iy /= 0 .or. iz /=0 ) then
-!if (iwH /=inwH ) then
+
 	r_atom_l(1)=xyz_H_lattice(inpH,inwH,1)+ix
 	r_atom_l(2)=xyz_H_lattice(inpH,inwH,2)+iy
 	r_atom_l(3)=xyz_H_lattice(inpH,inwH,3)+iz
@@ -794,29 +751,19 @@ if (ipH /=inpH .or. ix /= 0 .or. iy /= 0 .or. iz /=0 ) then
 	call tabbe_tabdil_lattic_cartezian(r_atom_l,r_atom_cz)
 
 	do i=1,3
- 	!R_H_elm(i)=r_atom_cz(i)-xyz_H_cartz(ipH,iwH,i) !bordar vasel H be atom digar==> jahat bordar F niroo
+ 	!R_H_elm(i)=r_atom_cz(i)-xyz_H_cartz(ipH,iwH,i) 
 	R_H_elm(i)=xyz_H_cartz(ipH,iwH,i)-r_atom_cz(i)
-!	R_H_elm(i)=H_transferd(i)-r_atom_cz(i)
+!	
 	enddo
 
-!	call tabbe_direct_distance_cartz(H_transferd(:),r_atom_cz(:),dis)
+
 	call tabbe_direct_distance_cartz(xyz_H_cartz(ipH,iwH,:),r_atom_cz(:),dis)
-	!dis ==> fasele ta atom mored nazar
+	
 
-!if (dis>40) goto 60    !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	!bar atom H ra +1 dar nazar gereftim
-	!......mohasebe niroo
-
-!in khat 1.3.2016 ezafe shod baraye inke bekhaym niro ro motegaren konim !**************************************
-!if (abs(R_H_elm(1))> N*a_cell(1) .or. abs(R_H_elm(2))> N*a_cell(2) .or. abs(R_H_elm(3))> N*a_cell(3)  ) goto 60!***
-!***************************************************************************************************************
 
 
 if (irn==700 .and. ipH==1 .and. iwH==2) then
-!write(373,'(f12.7)') dis
-! write (373,*) "555555" 
-! write(*,*) "!!!!", irn
-! read (*,*) i
+
 endif
 
 
@@ -831,28 +778,7 @@ endif
 	enddo
 	endif
 
-!************************************************************************************
-!************************** In tike baraye Grimselite Ezafe shode
-!	do i=1,3
-!	if (ix==0 .and. iy==0 .and. iz==0 .and. iwat==3) then
-!	F(i)=F(i)+ (h_oxidation**2/(dis**3) )*R_H_elm(i)
-!	elseif (ix==0 .and. iy==0 .and. iz==0 .and. iwat==2) then
-!	F(i)=F(i)
-!	elseif (ix==0 .and. iy==0 .and. iz==0 .and. iwat==4) then
-!	F(i)=F(i)
-!	else
-!	F(i)=F(i)+ 0.5*(h_oxidation**2/(dis**3) )*R_H_elm(i)
-!	endif		
-!	enddo
-	
-!*************************************************************************************
 
-
-
-
-
-
-!endif !iwH
 
 endif
 
@@ -873,13 +799,7 @@ do i=1,3
 force_H(ipH,iwH,i)=F(i)
 enddo
 
-!write (*,'(A10,3f10.5)') "Force...>" , force_H(ipH,iwH,:)
-!read (*,*) i
 
-! close (373)
-!CALL CPU_TIME(finish)
-!write(*,'(A10,f12.8)') "Time:", finish-start
-!read (*,*) mmmm
 
 return
 end subroutine tabbe2_calculate_forece_on_an_atom
@@ -893,62 +813,24 @@ implicit double precision (a-h,o-z)
 integer,intent(in):: N
 real,dimension(3),intent(inout) :: point_cz 
 real,dimension(3),intent(out) :: FF
-!ipH : shomare molecool AAb ro neshoon mide
-!iwH: shomare H oon molecool AAb
+
 
 real,dimension(3) :: r1,r2,r_atom_cz,r_atom_l,R_H_elm,F !in F bayad taghir kone hala, moteghayer global beshe ehtemalan
 real::dis
 integer :: ix,iy,iz,ip,iw
 
-!-1.14819   0.14076   5.65789
-!point_cz(1)=-1.14819
-!point_cz(2)=0.14076
-!point_cz(3)=5.65789
-
 
 F=0.
 
-!write(*,*) "#############", ipH,lO_elm(ipH)
+
 
 
 do ip=1,natypes
 do iw=1,iwykf(ip)
  
-!if (ip==1 .and. iw==1 )  write(*,*) "++++", xyz_H_lattice(ip,iw,:)
 
 
-! ip hydrogenha ro mostasna mikonim
-!if (ip==9 .or. ip==10 ) goto 55   !Haidingerite 10412
-!if (ip==6 .or. ip==7 ) goto 55   !BaCl2_2H2O  20023
-!if (ip==8 .or. ip==9 ) goto 55   !BaCl2_2H2O   20023
 
-!if (ip==5 .or. ip==6 ) goto 55   !BaCl2_H2O   20024
-
-!if (ip==9 .or. ip==10 ) goto 55  	!Apophyllite 00006
-!if (ip==11 ) goto 55                    !Apophylite   
-!if (ip==35 .or. ip==36 ) goto 55   !blue
-!if (ip==37 .or. ip==38 ) goto 55  !blue
-!if (ip==13 .or. ip==14 ) goto 55   !adolf
-!if (ip==9 .or. ip==10 ) goto 55   !Hydroxyapophyllite
-!if (ip==20 .or. ip==22 ) goto 55   !Kernite
-!if (ip==18 .or. ip==25 ) goto 55   !Kernite 00363
-
-!if (ip==4 .or. ip==5 ) goto 55   ! NaNiF3(3H2O) 30005 20025
-
-!if (ip==20 .and. iw==1 ) then
-!write(*,*) "==1===", r_wykf(ip,iw,:)
-! goto 55   !Kernite
-!endif
-
-!if (ip==22 .and. iw==1 ) then
-!write(*,*) "==2===", r_wykf(ip,iw,:)
-! goto 55   !Kernite
-!endif
-!if (irn==250) write(*,*) ip,iw
-
-!nemikhahim oxygenhayi ke vojood nadaran hesab shavand
-!*****************   agar atomi nabayad hazf beshe inja bayad moshakhas beshe
-!******************  agar nabayad chizi hazf beshe bere be khat 225
 goto 225
 if (ip==3) then
 if (iw==11 .or. iw==12) goto 55  
@@ -967,7 +849,7 @@ endif
 225 continue
 !!******************************************************************************
 
-!write(*,*) "ff", r_wykf(ip,iw,:)
+
 
 
 do ix=-1*N , N
@@ -997,11 +879,7 @@ do iz=-1*N , N
 	!dis ==> fasele ta atom mored nazar
 
 	if (ix==-1 .and. iy==-1 .and. iz==-1 .and. ip==24) then
-!	write(*,*) "+++++++++",point_cz(:)
-!	write(*,*) "ff",dis
-!	write(*,*) "---------",r_atom_cz(:)
-!	write(*,*) iwykf(ip)
-!	write(*,*) "ff",ip,iw
+
 	endif
 
 
@@ -1011,9 +889,6 @@ read (*,*) i
 endif
 
 
-
-	!baar e atom H ra +1 dar nazar gereftim
-	!......mohasebe niroo
 	do i=1,3
 	F(i)=F(i)+ (n_oxidation(ip)/(dis**3) )*R_H_elm(i)
 	enddo
@@ -1024,9 +899,7 @@ enddo
 enddo
 enddo
 
-!write(*,*) "fffffffffffff", F(:)
 
-!write(*,*) "!!!!!!!!!!!!!!!!!!!"
 55 continue
 
 
@@ -1035,20 +908,20 @@ enddo !ip
 
 
 
-!write (*,'(A10,3f10.5)') "Force...>" , force_H(ipH,iwH,:)
+
 
 
 do inpH=1,iwater  !***************************************************************
 
 
 
-do inwH=1,2   !har AAb 2 ta H dare     !iwater*2
+do inwH=1,2   
 
-if (inpH==1) then  !farz kardim mokhtasate aab shomare yek mad nazare
+if (inpH==1) then  
  goto 65  
 endif
 
-!write(*,'(2I5,3f12.7)')  inpH,inwH, xyz_H_lattice(inpH,inwH,:)
+
 
 
 do ix=-1*N , N
@@ -1063,9 +936,7 @@ do iz=-1*N , N
 	call tabbe_tabdil_lattic_cartezian(r_atom_l,r_atom_cz)
 
 	do i=1,3
-	!R_H_elm(i)=xyz_H_cartz(ipH,iwH,i)-r_atom_cz(i)
 	R_H_elm(i)=point_cz(i)-r_atom_cz(i)
-	!R_H_elm(i)=xyz_H_cartz(ipH,iwH,i)-r_atom_cz(i)
 	enddo
 
 	call tabbe_direct_distance_cartz(point_cz(:),r_atom_cz(:),dis)
@@ -1103,15 +974,11 @@ do i=1,3
 FF(i)=F(i)
 enddo
 
-!write (*,'(A10,3f10.5)') "........>" , FF(:)
-!read (*,*) i
-
 
 
 return
 end subroutine tabbe2_calculate_forece_on_a_point
-!niroo be yek poit
-!mokhtasate cartezi migire
+!------------------------------
 subroutine  tabbe2_calculate_forece_on_TIPxP(point_cz,nTIP_indx,nTIP,Nwat,N)
 use module_dictionary
 use module_structure_symmetry_all
@@ -1121,22 +988,17 @@ integer,intent(in):: nTIP,Nwat,N,nTIP_indx
 real,dimension(3),intent(in) :: point_cz 
 !real,dimension(3),intent(out) :: FF
 real,dimension(3):: FF
-!ipH : shomare molecool AAb ro neshoon mide
-!iwH: shomare H oon molecool AAb
+
 
 real,dimension(3) :: r1,r2,r_atom_cz,r_atom_l,R_H_elm,F !in F bayad taghir kone hala, moteghayer global beshe ehtemalan
 real::dis,dis_max
 integer :: ix,iy,iz,ip,iw
 
-!-1.14819   0.14076   5.65789
-!point_cz(1)=-1.14819
-!point_cz(2)=0.14076
-!point_cz(3)=5.65789
+
 
 dis_max=45000.
 F=0.
 
-!write(*,*) "#############", nTIP_indx,nTIP,Nwat
 
 
 
@@ -1152,8 +1014,7 @@ do iwat=1,iwater
  endif
 enddo
 
-!write(*,*) ip, icont
-!read (*,*) lll
+
 if (icont==1) goto 155
 
 
@@ -1165,26 +1026,25 @@ do iw=1,iwykf(ip)
 !*****************   agar atomi nabayad hazf beshe inja bayad moshakhas beshe
 !******************  agar nabayad chizi hazf beshe bere be khat 225
 goto 225
-if (ip==3) then
-if (iw==11 .or. iw==12) goto 55  
-if (iw==15 .or. iw==16) goto 55  
-if (iw==19 .or. iw==20) goto 55  
-if (iw==23 .or. iw==24) goto 55  
-if (iw==27 .or. iw==28) goto 55  
-if (iw==31 .or. iw==32) goto 55  
+!if (ip==3) then
+!if (iw==11 .or. iw==12) goto 55  
+!if (iw==15 .or. iw==16) goto 55  
+!if (iw==19 .or. iw==20) goto 55  
+!if (iw==23 .or. iw==24) goto 55  
+!if (iw==27 .or. iw==28) goto 55  
+!if (iw==31 .or. iw==32) goto 55  
 
 endif
 !225 continue
 
-if (ip==lO_elm(ipH)) then     !for  Grimselite 06225/ 40000  !2 ta AMC4000 vojood dare ke ba ham motefavetan, too Output va Dic
+if (ip==lO_elm(ipH)) then     
 if (iw==2 .or. iw==4) goto 55  
-				!ein baraye vaghtiye ke partial occupancy darim. 
+				 
 endif
 225 continue
 
 !!******************************************************************************
 
-!write(*,*) "ff", r_wykf(ip,iw,:)
 
 
 do ix=-1*N , N
@@ -1208,10 +1068,10 @@ do iz=-1*N , N
 	enddo
 
 
-	! R_H_elm() is an array to keep the components of vector R=r|H-r|elm
+	
 
 	call tabbe_direct_distance_cartz(point_cz(:),r_atom_cz(:),dis)
-	!dis ==> fasele ta atom mored nazar
+
 
 	if (ix==-1 .and. iy==-1 .and. iz==-1 .and. ip==24) then
 !	write(*,*) "+++++++++",point_cz(:)
@@ -1243,9 +1103,9 @@ enddo
 enddo
 enddo
 
-!write(*,*) "fffffffffffff", F(:)
 
-!write(*,*) "!!!!!!!!!!!!!!!!!!!"
+
+
 55 continue
 
 
@@ -1255,23 +1115,10 @@ enddo !ip
 
 
 
-!write(*,'(A10,3f12.6)') "1-----  ",F(:)
 
 
 
 
-
-
-
-
-
-
-
-
-! mikhaym nirooye hasel az bar O jabeja shode ro, hesab konim! tavajoh shavad, in faghar baraye Oxygen haye khaej az unit sell hast!
-! in momkene mansha eshtebah bashe! choon baraye grimselite, O ha tooye unit cell nistand!!
-
-!Goto 35
 do jtip=1,nTIP
 do iwat=1,iwater
 !do iw=1,lO_wykf(iwat)
@@ -1280,8 +1127,8 @@ do ix=-1*N , N
 do iy=-1*N , N
 do iz=-1*N , N
 		
-if (iwat /= Nwat .or. ix /= 0 .or. iy /= 0 .or. iz /=0 ) then !mikhaym nirooye hasel az khodeshoon ro hesab nakonim
-!if (iwat /= Nwat ) then
+if (iwat /= Nwat .or. ix /= 0 .or. iy /= 0 .or. iz /=0 ) then 
+
 
 	r_atom_l(1)=ox_shift_latt(iwat,jtip,1)+ix
 	r_atom_l(2)=ox_shift_latt(iwat,jtip,2)+iy
@@ -1296,22 +1143,16 @@ if (iwat /= Nwat .or. ix /= 0 .or. iy /= 0 .or. iz /=0 ) then !mikhaym nirooye h
 
 !	call tabbe_direct_distance_cartz(xyz_H_cartz(ipH,iwH,:),r_atom_cz(:),dis)
 	call tabbe_direct_distance_cartz(point_cz(:),r_atom_cz(:),dis)
-!if (dis < 0.1) write(*,*) "dis==0, elements", iwat,lO_elm(iwat),lO_wykf(iwat)
 
-!if (dis > 0.1) then   !04/05/2017 in activated
+	
 
-!write(*,*) "dis==0, elements", iwat,lO_elm(iwat),lO_wykf(iwat)
-!read (*,*) i
-!endif
-	!baar e atom H ra +1 dar nazar gereftim
-	!......mohasebe niroo
 	if (dis > 0.0 ) then
 	do i=1,3
 	F(i)=F(i)+ (occ(lO_elm(Nwat),1) *occ(lO_elm(iwat),1) *(delta_q**2 )/(dis**3) )*R_H_elm(i)
 	enddo
 	endif
 
-!endif    !04/05/2017 in activated
+!endif   
 endif
 
 enddo
@@ -1323,7 +1164,7 @@ enddo
 enddo !jtip
 35 continue
 
-!write(*,'(A10,3f12.6)') "2-----  ",F(:)
+
 
 
 
@@ -1399,7 +1240,7 @@ enddo
 
 
 
-!write(*,'(A10,3f12.6)') "3-----  ",F(:)
+
 
 
 75 continue
@@ -1409,17 +1250,14 @@ do i=1,3
 delta_force(Nwat,nTIP_indx,i)=F(i)
 enddo
 
-!write (*,'(A10,3f10.5)') "........>" , FF(:)
-!read (*,*) i
 
 
 
 return
 end subroutine tabbe2_calculate_forece_on_TIPxP
-! mokhtasat kartezi ro migire, ye noghte markazi ro ham migire, be markaziyat in noghte, mokhtasat koravi
-!noghte aval ro bedast miyare
+!--------------------
 
-subroutine tabbe2_cartz_spherical(r_origin,r_xyz,R,thet,phi) !,r_lattic,r_cartezian)
+subroutine tabbe2_cartz_spherical(r_origin,r_xyz,R,thet,phi) 
 use module_dictionary
 use module_structure_symmetry_all
 implicit double precision (a-h,o-z)
@@ -1429,7 +1267,7 @@ real, dimension(3),intent(in) :: r_origin,r_xyz
 real,intent(out):: thet,phi,R !r_lattic, r_cartezian
 
 real, dimension(3)::r_sub  !r_orig_cartz,r_prime
-!real:: cs_tht,si_tht,cs_phi,si_phi,rad_tht,rad_phi
+
 real::Rxy,rad_tht,rad_phi
 
 R=0.
@@ -1465,9 +1303,7 @@ phi=phi*180/3.141593
 
 if (abs(r_sub(1)/Rxy) >= 1.0000000000000000) phi=0.00000
 
-!write(*,*) "tabbe_cartz_spherical**********",thet,phi
-!write(*,'(f21.16)') abs(r_sub(1)/Rxy)
-!write(*,*) "~~~~~~~~~~~~~~~~~~~~~~~~~~",acos(1.00000) , acos(1.000001),acos(0.9999999)
+
 if (r_sub(1)>=0) then
 	if (r_sub(2) >=0) then
 	 phi=phi
@@ -1490,28 +1326,14 @@ endif
 
 
 
-!write(*,*) "r=",r_sub
-!write(*,*) "R==", R
-!write(*,*) "Rxy==", Rxy
-
-
-
-
-
-!write(*,*) "@@@@@@@@@@==",thet,phi
-
-!phi=0
-
-!write(*,*) "tabbe_cartz_spherical*****",thet,phi
 
 
 900 continue
 
 return
 end subroutine tabbe2_cartz_spherical
-!mokhtase ye O ro migire,cartezi, ye Theta , Phi, Xi, migire, mokhtasate H haye molecoole AAb ro mide__be Cartezi
-!Theta,Phi, Xi darvaghe mokhtasate markaze 2 ta H ast
-!t==Theta      f==Phi
+!----------------------
+
 
 subroutine  tabbe2_finding_Hs_by_midelpoint(rO,tht,phi,Xi,rH1,rH2)
 use module_dictionary
@@ -1529,12 +1351,7 @@ real:: RR_H1,tht_H1,Phi_H1,RR_H2,tht_H2,Phi_H2,PI,gama
 real, dimension(3) :: r_xi1,r_xi2,r_m
 real, dimension(3) :: r_hat,tht_hat,phi_hat,r_mines,r_tmp
 integer :: i,itht,iphi
-!real:: w_angle=54.
-!real, dimension(3) :: RR,point_lat,point_cz,FF,Trq,r_hat,tht_hat,phi_hat,F_tan_cz
-!real:: thet,phi,trq_mag,F_mag,t,f,tresh, F_tht,F_phi,F_cz_mag
-! open (unit=643, file='./Results/Torque_contour_plot',status='replace', action='write' , IOstat= ierr)
 
-!rHH, rHH_t
 
 
 
@@ -1564,13 +1381,11 @@ xd=d_O_H*tan(w_angle*3.141593/180.0)   !mikhaym az midpoint be in andaze jabeja 
 			! 52 nesfe zaviye beyne do H ast==>104
 
 
-!mokhtasate noghte vasat ...mokhtasate Oxygen bayad behesh ezafe beshe
 r_m(1)=d_O_H*r_hat(1)+rO(1)
 r_m(2)=d_O_H*r_hat(2)+rO(2)
 r_m(3)=d_O_H*r_hat(3)+rO(3)
 
-!write(*,*) rO
-!write(*,'(A10,3f12.5)') "rmmm",r_m
+
 
 
 !**************************************************
@@ -1676,8 +1491,7 @@ endif
 
 return
 end subroutine tabbe2_finding_Hs_by_midelpoint
-!barname ei baraye tabdil mokhtasate tamam atomha be mokhtasate cartezian
-!arraye "n_wykf_oxid" ham inja meghdar dehi mishavad (tariif nakardam felan)
+!--------------------
 subroutine  tabbe2_make_xyz_cartz_array()
 use module_dictionary
 use module_structure_symmetry_all
@@ -1686,18 +1500,14 @@ implicit double precision (a-h,o-z)
 integer :: ip,iw,ierr,j
 
 ALLOCATE (xyz_wykf_cartz(natypes,iwykf_max,3),STAT= ierr) 
-!ALLOCATE (n_wykf_oxid(natypes,iwykf_max),STAT= ierr)
-!ALLOCATE (r_wykf(natypes,iwykf_max,3),STAT= nst)
+
 
 
 do ip=1,natypes
 do iw=1,iwykf(ip)
 call tabbe_tabdil_lattic_cartezian(r_wykf(ip,iw,:),xyz_wykf_cartz(ip,iw,:))
 
-!write(*,*)  (r_wykf(ip,iw,j),j=1,3)
-!write(*,*)  (xyz_wykf_cartz(ip,iw,j),j=1,3)
-!write(*,*) n_oxidation(ip)
-!write(*,*) "....."
+
 enddo
 enddo
 
@@ -1707,9 +1517,7 @@ enddo
 
 return
 end subroutine tabbe2_make_xyz_cartz_array
-!Tabe ei ke mokhtasate molecul AAb ro migire, mokhtasate theta phi noghte vasat 2 ta h ro mide va Xi (jahatgiri)
-!mokhtasat bayad kartezi bashad
-!ma'koos in barname "tabbe2_finding_Hs_by_midelpoint.f90" ast.
+!--------------------------------
 subroutine tabbe2_median(rO,rH1,rH2,tht,phi,xi)
 use module_dictionary
 use module_structure_symmetry_all
@@ -1722,7 +1530,7 @@ real,dimension(3) ::tansor,r_plus,r_mines,r_hat,tht_hat,phi_hat
 integer:: ii,i,ierr,mosbat
 real:: rr,rHH,rHH_t,tt,ff,rHH_p
 
-! open (unit=621, file='./Results/Theta_Phi_path',status='old', action='write' , IOstat= ierr)
+
 	rHH=0.
 	do i=1,3
 	r_plus(i)=rH1(i)+rH2(i)
@@ -1754,7 +1562,7 @@ phi_hat(2)= cos(ff)
 phi_hat(3)= 0.
 !........................................
 
-! zaviye Xi, zaviye ba bordar Theta^ ast
+
 rHH_t=0.
 rHH_p=0.
 do i=1,3
@@ -1790,15 +1598,13 @@ if (rHH_t/rHH >0 .and. mosbat==-1 ) xi = 180. - xi
 
 
 
-!write(*,*) "zzzzzz", tht,phi,xi
-! write( 621,'(2f10.4)') tht,phi
 
 return
 end subroutine tabbe2_median
 
 
 
-!tabbe ei baraye tashih makan, mikhahim motmaen shavim fasele H bishtar az 1 nemishavad
+!------------------------
 subroutine  tabbe2_modify_positions()
 use module_dictionary
 use module_structure_symmetry_all
@@ -1906,7 +1712,7 @@ allocate (hydrogen_coords(nal,3),STAT=istats)
 
 r_l=r_comper
 
-do it=1,multil(is)    !nshiftl considered at following	
+do it=1,multil(is)    !nshiftl considered at the following	
 
 d_x= ssyml(1,1,it,is) * r_l(1)+ssyml(1,2,it,is) * r_l(2)+ssyml(1,3,it,is) * r_l(3)
 d_y= ssyml(2,1,it,is) * r_l(1)+ssyml(2,2,it,is) * r_l(2)+ssyml(2,3,it,is) * r_l(3)
@@ -2013,11 +1819,7 @@ endif
 
 return
 end subroutine tabbe2_move_by_symmetry
-!in barname asliye ke charkhesh ro baraye ma anjam mide
-!dar tarikh 10/4/2016 taghiresh dadam, goto 111 ro negah kon
-!**NOKTE: shive charkhesh ro be Quatronium taghir dadam
-!dar format ghadim, del_phi jabejaei bood dar vaghe, ke 0.01 dar nazar migereftim
-!dar shive jadid, del_phi vaghean zaviye charkheshe, ke bayad 0.5 bashe, moadele 0.01 jabejaei
+!-----------------------
 subroutine  tabbe2_rotation(rO,rH,rH_prim,Trq,del_phi)
 use module_dictionary
 use module_structure_symmetry_all
@@ -2090,13 +1892,7 @@ RR_mag= sqrt(RR_mag)
 
 
 
-!write(*,*) "......."
-!write(*,'(3f10.5)') RR
-!write(*,'(3f10.5)') r_prime
-!write(*,*) RR_mag,rp_mag
-!write(*,'(3f10.5)') torq
-!write(*,'(3f10.5)') rot_axis
-!write(*,'(f10.5)') torq_mag
+
 
 do i=1,3
 rH_prim(i)=r_prime(i)+rO(i)
@@ -2111,14 +1907,6 @@ rot4vectors(1)=del_phi*3.141593/180.0
 do ii=1,3
 rot4vectors(1+ii)=rot_axis(ii)
 enddo
-!rot4vectors(1)=180.*3.141593/180.0
-!rot4vectors(2)=0.
-!rot4vectors(3)=0.
-!rot4vectors(4)=0.
-
-!RR(1)=0.
-!RR(2)=1.
-!RR(3)=0.
 
 call qxqml2(quat,RR,rot4vectors)
 do jj=2,4
@@ -2127,15 +1915,10 @@ quat(jj)=quat(jj)+rO(jj-1)
 enddo
 
 
-!write(*,'("my----    ",3f10.5)') rH_prim
-!write(*,'("quat--    ",3f10.5)') (quat(k),k=2,4)
-!write(*,*) ""
 
 
-!	call tabbe_zaviyeyeab_cartz(xyz_wykf_cartz(lO_elm(iwat),lO_wykf(iwat),:),xyz_H_cartz(iwat,2,:),rH_prim,dis1)!@@@@@@
 
-!write(*,'("axis--",3f12.6)') rot_axis(2),rot_axis(3),rot_axis(4)
-!write(*,'("r_Rot--",3f12.6)') rH_prim
+
 
 
 do jj=2,4
@@ -2152,17 +1935,7 @@ endif
 
 return
 end subroutine tabbe2_rotation
-!barname'i baraye mokhtasat dehi ebtedayi be H
-!bayad joori taghir kone ke masalan mokhtasat O ha ro az jayi bekhone ya ...
-!felan mokhtasat O behesh dade mishe
-
-!04/16/2016
-!in barname ro mikham joori taghir bedam ke faghat baraye molecule aval, Thet, Phi , Xi ro begire
-!mokhtasat bede
-
-
-!r_wykf(lO_elm(iwat),lO_wykf(iwat),:)  Mokhtasate latise molecoolhaye Oxygen
-! xyz_wykf_cartz(lO_elm(iwat),lO_wykf(iwat),:) Mokhtasate cartezi Molecoolhaye O
+!------------------------
 
 
 subroutine  tabbe2_set_initial_H()
@@ -2183,16 +1956,7 @@ zp=104
 zb=106
 
 
-!integer:: ndim
-!integer, allocatable, dimension (:) :: iseed,iseed_first,iseed_last ! seed array
-!call random_seed(size=ndim)             ! seeding   
-!allocate(iseed(ndim))
-!allocate(iseed_first(ndim))
-!allocate(iseed_last(ndim))
-!iseed= Seed
-!deallocate(iseed)
-!deallocate(iseed_first)
-!deallocate(iseed_last)
+
 
 
 
@@ -2319,22 +2083,8 @@ r_xyz(3)=zz + r_center(3)
 
 return
 end subroutine tabbe2_spherical_cartz
-! In tabe, shekle molekool Aab ro, ba asas modeli ke darim, misaze
-! masalan, bar asas model TIP4P zaviye ro 104 migire va jebejayi bar Ox ro 0.15A
-! be har hal tabe asli dar shekl dehi model hast
 
-!*** In 2 mokhtasat ke jabejayi bar OX hastand ro dar akhar bayad moshakhas konim
-!ox_shift_cz(iwat,nTIP,:)
-!ox_shift_latt(iwat,nTIP,:)
-
-!r_wykf(lO_elm(iwat),lO_wykf(iwat),:)  Mokhtasate latise molecoolhaye Oxygen
-! xyz_wykf_cartz(lO_elm(iwat),lO_wykf(iwat),:) Mokhtasate cartezi Molecoolhaye Oxygen
-!xyz_H_cartz(iwat,1,:) mokhtasat H, moolecool iwat
-!xyz_H_lattice(iwat,iH,:)
-
-! DELTA_DISTANCE: fasee bar Ox ta makan haghighi Ox
-!delta_angle: zaviye ei ke barhaye majazi ba ham misazan, dar TIP5P model
-
+!------- Creating water molecule based on the model
 subroutine  tabbe2_TIPxP(nTIP)
 use module_dictionary
 use module_structure_symmetry_all
@@ -2350,9 +2100,8 @@ integer:: i,j,k,mm,jtip
 
 
 
-! mokhtase aval, shomare molecool Water ro neshoon mide
 
-!write(*,*) "********TABBE TIPXP*******"
+
 
 ang= 3.141593* delta_angle/(2. * 180.)
 dd=delta_distance
@@ -2379,11 +2128,7 @@ do iwat=1,iwater
 	ox_shift_cz(iwat,nTIP,k)=delta_distance* r_plus_hat(k)+ xyz_wykf_cartz(lO_elm(iwat),lO_wykf(iwat),k)
 	enddo
 
-!	call tabbe_direct_distance_cartz(xyz_wykf_cartz(lO_elm(iwat),lO_wykf(iwat),:),ox_shift_cz(iwat,nTIP,:),dis)
-!	WRITE(*,'(3F12.6)') xyz_wykf_cartz(lO_elm(iwat),lO_wykf(iwat),:)
-!	WRITE(*,'(3F12.6)') ox_shift_cz(iwat,nTIP,:)
-!	write(*,*) dis
-!	read (*,*) mm
+
 
 	call tabbe_tabdil_cartezian_lattic(ox_shift_cz(iwat,nTIP,:),ox_shift_latt(iwat,nTIP,:))
 
@@ -2432,30 +2177,7 @@ else if (nTIP==2) then
  enddo
 endif
 
-!write(*,'(3f12.6)') xyz_wykf_cartz(lO_elm(5),lO_wykf(5),:)
-!write(*,'(3f12.6)') ox_shift_cz(1,2,:)
-!write(*,'(3f12.6)') ox_shift_cz(1,2,:)
-!call tabbe_zaviyeyeab_cartz(xyz_wykf_cartz(lO_elm(5),lO_wykf(5),:),ox_shift_cz(5,1,:),ox_shift_cz(5,2,:),tht)
-!xyz_wykf_cartz(lO_elm(iwat),lO_wykf(iwat),i)
-!write(*,'(A15,f16.10)') "z-------", tht
-!	call tabbe_tabdil_cartezian_lattic(xyz_wykf_cartz(lO_elm(5),lO_wykf(5),:),roh1)
-!	write(*,'(A7,3f12.6)') " O  0",roh1
- !	write(*,'(A7,3f12.6)') " He  0",xyz_H_lattice(5,1,:)!
-!	write(*,'(A7,3f12.6)') " He  0",xyz_H_lattice(5,2,:)
-!	write(*,*) ""
-!	write(*,'(A7,3f12.6)') " c  0",ox_shift_latt(5,1,:)
-!	write(*,'(A7,3f12.6)') " c  0",ox_shift_latt(5,2,:)
-!	read (*,*) mm
 
-!sm=1.
-!do i=5,90,5
-!tm=real(i)*3.1415/180.
-!tt=cos(tm)*2.*3.1415/0.0981
-!write(*,*) tt
-!sm=sm+tt
-!enddo
-!write(*,*) "ineee" ,sm
-!read(*,*) mm
 
 
 return
@@ -2477,11 +2199,7 @@ real,dimension (nTIP,3)::dRR
 
 
 
-!do iwat=1,iwater
-!do iH=1,2
 
-!write(*,*) "***",lO_elm(iwat),lO_wykf(iwat)
-!write(*,*) xyz_wykf_cartz(lO_elm(iwat),lO_wykf(iwat),:)
 
 do i=1,3
 RR(i)=xyz_H_cartz(iwat,iH,i)-xyz_wykf_cartz(lO_elm(iwat),lO_wykf(iwat),i) !riidemal shod, vali "xyz_wykf_cartz" !mokhtasate oxygen ast.
@@ -2499,22 +2217,7 @@ torque_H(iwat,iH,3)= RR(1)*force_H(iwat,iH,2)-RR(2)*force_H(iwat,iH,1)
 !torq(3)= RR(1)*F(2)-RR(2)*F(1)
 
 
-!delta_torque(iwat,nTIP,:)
-!delta_force(iwat,jtip,:)
 
-!do jtip=1,nTIP
-!delta_torque(iwat,jtip,1)= dRR(jtip,2)*delta_force(iwat,jtip,3)-dRR(jtip,3)*delta_force(iwat,jtip,2)
-!delta_torque(iwat,jtip,2)= dRR(jtip,3)*delta_force(iwat,jtip,1)-dRR(jtip,1)*delta_force(iwat,jtip,3)
-!delta_torque(iwat,jtip,3)= dRR(jtip,1)*delta_force(iwat,jtip,2)-dRR(jtip,2)*delta_force(iwat,jtip,1)
-!enddo
-
-
-!enddo
-!enddo
-
-
-
-!write(*,'(A15,3f12.7)') "Torq..>  " ,torque_H(1,1,1),torque_H(1,1,2),torque_H(1,1,3)
 
 
 
@@ -2535,12 +2238,6 @@ real, dimension(3) :: RR
 real, dimension(3),intent(in)::r_O,point_cz,FF
 real, dimension(3),intent(out)::Trq
 
-!do iwat=1,iwater
-!do iH=1,2
-
-!write(*,*) "***",lO_elm(iwat),lO_wykf(iwat)
-!write(*,*) xyz_wykf_cartz(lO_elm(iwat),lO_wykf(iwat),:)
-
 
 
 
@@ -2557,12 +2254,6 @@ Trq(2)= RR(3)*FF(1)-RR(1)*FF(3)
 Trq(3)= RR(1)*FF(2)-RR(2)*FF(1)
 !torq(2)= RR(3)*F(1)-RR(1)*F(3)
 !torq(3)= RR(1)*F(2)-RR(2)*F(1)
-
-
-
-!enddo
-!enddo
-
 
 
 
@@ -2589,12 +2280,6 @@ real,dimension (nTIP,3)::dRR
 
 
 
-!do iwat=1,iwater
-!do iH=1,2
-
-!write(*,*) "***",lO_elm(iwat),lO_wykf(iwat)
-!write(*,*) xyz_wykf_cartz(lO_elm(iwat),lO_wykf(iwat),:)
-
 
 !RR(i)=xyz_H_cartz(iwat,iH,i)-xyz_wykf_cartz(lO_elm(iwat),lO_wykf(iwat),i) !riidemal shod, vali "xyz_wykf_cartz" !mokhtasate oxygen ast.
 do jtip=1,nTIP
@@ -2607,22 +2292,12 @@ enddo
 
 
 
-!delta_torque(iwat,jtip,:)
-!delta_force(iwat,jtip,:)
 
 do jtip=1,nTIP
 delta_torque(iwat,jtip,1)= dRR(jtip,2)*delta_force(iwat,jtip,3)-dRR(jtip,3)*delta_force(iwat,jtip,2)
 delta_torque(iwat,jtip,2)= dRR(jtip,3)*delta_force(iwat,jtip,1)-dRR(jtip,1)*delta_force(iwat,jtip,3)
 delta_torque(iwat,jtip,3)= dRR(jtip,1)*delta_force(iwat,jtip,2)-dRR(jtip,2)*delta_force(iwat,jtip,1)
 enddo
-
-
-!enddo
-!enddo
-
-
-
-!write(*,'(A15,3f12.7)') "Torq..>  " ,torque_H(1,1,1),torque_H(1,1,2),torque_H(1,1,3)
 
 
 
@@ -3214,9 +2889,7 @@ call tabbe2_make_xyz_cartz_array()
 DO irun=1,N_Run  !"ijk" is a variable as a counter
 
 print *, "Iteration:   " , irun, " out of ",N_Run
-!T1=70
-!Ph1=120
-!X1=50
+
 
 xyz_H_cartz=0.
 xyz_H_lattice=0.
@@ -3385,7 +3058,7 @@ work(iwat)=work(iwat)+torque_net_mag(iwat)*(del_phi2*3.14159265/180.0)*14.400304
 
 
 endif
-enddo !iwater  ***********charkhandan  
+enddo !iwater  
 !******************************************************************************
 
 if (mod (iii,100)==0) then
@@ -3420,7 +3093,7 @@ call tabbe2_TIPxP(iTIP)
 
 ENDDO                !<<<<<<<<<<<<<<<<<<<iii>>>>>>>>>>>>>>>>>>>>>>>
 
-!*********************************8Cartezian coordination
+!*********************************Cartezian coordination
 print *, ""
 print *, "Hloc has found:"
 
